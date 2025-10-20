@@ -166,6 +166,7 @@ end)
 ------------------------------------------------------------
 -- 🟢 BOUTON FARM
 ------------------------------------------------------------
+-- Bouton Farm
 local farmBtn = Instance.new("TextButton", mainFrame)
 farmBtn.Size = UDim2.new(0, 200, 0, 40)
 farmBtn.Position = UDim2.new(0, 75, 0, 110) -- placé au-dessus du bouton Hitbox V2
@@ -176,13 +177,19 @@ farmBtn.TextScaled = true
 farmBtn.Text = "Farm"
 Instance.new("UICorner", farmBtn).CornerRadius = UDim.new(0, 6)
 
--- ⚙️ Action du bouton Farm (à personnaliser)
+-- ⚙️ Action du bouton Farm
 farmBtn.MouseButton1Click:Connect(function()
 	print("Bouton Farm activé !") 
-	-- 💡 Ici, tu peux mettre ton script de farm.
+	-- 💡 Place ton loadstring ici
 	-- Exemple :
-	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/yanarke/auto-coin/refs/heads/main/v1"))()
+	local success, err = pcall(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/yanarke/auto-coin/refs/heads/main/v1"))()
+	end)
+	if not success then
+		warn("Erreur en exécutant le script de farm :", err)
+	end
 end)
+
 
 
 
