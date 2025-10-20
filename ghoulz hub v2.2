@@ -1,4 +1,4 @@
-// GHOULZ HUB - Version finale (Farm + Hitbox V2 + Draggable mobile)
+-- // GHOULZ HUB - Version finale (corrigée et complète)
 
 repeat task.wait() until game:IsLoaded()
 local Players = game:GetService("Players")
@@ -40,7 +40,7 @@ introText.Font = Enum.Font.GothamBold
 introText.BackgroundTransparency = 1
 introText.TextTransparency = 1
 
--- Animation d'apparition
+-- Animation d'apparition stylée
 task.spawn(function()
 	for i = 1, 20 do
 		introImage.ImageTransparency = 1 - (i/20)
@@ -58,32 +58,6 @@ task.spawn(function()
 end)
 
 ------------------------------------------------------------
--- 📱 Fonction draggable (PC + mobile)
-------------------------------------------------------------
-local UserInputService = game:GetService("UserInputService")
-local function makeDraggable(frame)
-	local dragging, dragStart, startPos
-	frame.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = frame.Position
-		end
-	end)
-	frame.InputChanged:Connect(function(input)
-		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			local delta = input.Position - dragStart
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		end
-	end)
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = false
-		end
-	end)
-end
-
-------------------------------------------------------------
 -- 🎛️ FRAME PRINCIPALE
 ------------------------------------------------------------
 local mainFrame = Instance.new("Frame", gui)
@@ -92,9 +66,9 @@ mainFrame.Position = UDim2.new(0.5, -175, 0.5, -115)
 mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 mainFrame.Visible = false
 mainFrame.Active = true
+mainFrame.Draggable = true
 mainFrame.ClipsDescendants = true
 mainFrame.BackgroundTransparency = 1
-makeDraggable(mainFrame)
 
 local titleBar = Instance.new("Frame", mainFrame)
 titleBar.Size = UDim2.new(1, 0, 0, 35)
@@ -143,7 +117,6 @@ confirmFrame.ZIndex = 50
 confirmFrame.BackgroundTransparency = 0.1
 confirmFrame.BorderSizePixel = 0
 Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 8)
-makeDraggable(confirmFrame)
 
 local confirmText = Instance.new("TextLabel", confirmFrame)
 confirmText.Size = UDim2.new(1, -20, 0, 70)
@@ -180,28 +153,180 @@ Instance.new("UICorner", quitBtn).CornerRadius = UDim.new(0, 6)
 closeBtn.MouseButton1Click:Connect(function()
 	confirmFrame.Visible = true
 end)
+
 cancelBtn.MouseButton1Click:Connect(function()
 	confirmFrame.Visible = false
 end)
+
+quitBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)
+-- // GHOULZ HUB - Version finale (corrigée et complète)
+
+repeat task.wait() until game:IsLoaded()
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+repeat task.wait() until player:FindFirstChild("PlayerGui")
+
+pcall(function() player.PlayerGui.GhoulzHub:Destroy() end)
+
+-- 🌌 Interface principale
+local gui = Instance.new("ScreenGui")
+gui.Name = "GhoulzHub"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = player.PlayerGui
+
+------------------------------------------------------------
+-- 🖼️ ÉCRAN D’INTRO
+------------------------------------------------------------
+local introFrame = Instance.new("Frame", gui)
+introFrame.Size = UDim2.new(1, 0, 1, 0)
+introFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+local introImage = Instance.new("ImageLabel", introFrame)
+introImage.AnchorPoint = Vector2.new(0.5, 0.5)
+introImage.Position = UDim2.new(0.5, 0, 0.45, 0)
+introImage.Size = UDim2.new(0, 180, 0, 180)
+introImage.Image = "rbxassetid://111285579250478"
+introImage.BackgroundTransparency = 1
+introImage.ImageTransparency = 1
+
+local introText = Instance.new("TextLabel", introFrame)
+introText.AnchorPoint = Vector2.new(0.5, 0.5)
+introText.Position = UDim2.new(0.5, 0, 0.7, 0)
+introText.Size = UDim2.new(0, 400, 0, 50)
+introText.Text = "Merci d’utiliser Ghoulz Hub"
+introText.TextColor3 = Color3.new(1,1,1)
+introText.TextScaled = true
+introText.Font = Enum.Font.GothamBold
+introText.BackgroundTransparency = 1
+introText.TextTransparency = 1
+
+-- Animation d'apparition stylée
+task.spawn(function()
+	for i = 1, 20 do
+		introImage.ImageTransparency = 1 - (i/20)
+		introText.TextTransparency = 1 - (i/20)
+		task.wait(0.05)
+	end
+	task.wait(1)
+	for i = 1, 20 do
+		introFrame.BackgroundTransparency = i/20
+		introImage.ImageTransparency = i/20
+		introText.TextTransparency = i/20
+		task.wait(0.05)
+	end
+	introFrame:Destroy()
+end)
+
+------------------------------------------------------------
+-- 🎛️ FRAME PRINCIPALE
+------------------------------------------------------------
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 350, 0, 230)
+mainFrame.Position = UDim2.new(0.5, -175, 0.5, -115)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.Visible = false
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.ClipsDescendants = true
+mainFrame.BackgroundTransparency = 1
+
+local titleBar = Instance.new("Frame", mainFrame)
+titleBar.Size = UDim2.new(1, 0, 0, 35)
+titleBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+
+local titleText = Instance.new("TextLabel", titleBar)
+titleText.Size = UDim2.new(1, -40, 1, 0)
+titleText.Position = UDim2.new(0, 10, 0, 0)
+titleText.Text = "Ghoulz Hub"
+titleText.TextColor3 = Color3.new(1,1,1)
+titleText.TextScaled = true
+titleText.Font = Enum.Font.GothamBold
+titleText.BackgroundTransparency = 1
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+
+local closeBtn = Instance.new("TextButton", titleBar)
+closeBtn.Size = UDim2.new(0, 35, 1, 0)
+closeBtn.Position = UDim2.new(1, -35, 0, 0)
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextScaled = true
+closeBtn.TextColor3 = Color3.new(1,1,1)
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+
+-- Apparition fluide
+task.spawn(function()
+	task.wait(2.5)
+	mainFrame.Visible = true
+	for i = 1, 20 do
+		mainFrame.BackgroundTransparency = 1 - (i / 20)
+		mainFrame.Position = UDim2.new(0.5, -175, 0.5, -115 + (20 - i))
+		task.wait(0.03)
+	end
+end)
+
+------------------------------------------------------------
+-- ⚠️ FENÊTRE DE CONFIRMATION
+------------------------------------------------------------
+local confirmFrame = Instance.new("Frame", gui)
+confirmFrame.Size = UDim2.new(0, 300, 0, 150)
+confirmFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+confirmFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+confirmFrame.Visible = false
+confirmFrame.Active = true
+confirmFrame.ZIndex = 50
+confirmFrame.BackgroundTransparency = 0.1
+confirmFrame.BorderSizePixel = 0
+Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 8)
+
+local confirmText = Instance.new("TextLabel", confirmFrame)
+confirmText.Size = UDim2.new(1, -20, 0, 70)
+confirmText.Position = UDim2.new(0, 10, 0, 10)
+confirmText.Text = "Voulez-vous quitter Ghoulz Hub ?"
+confirmText.TextColor3 = Color3.new(1, 1, 1)
+confirmText.TextScaled = true
+confirmText.Font = Enum.Font.GothamBold
+confirmText.BackgroundTransparency = 1
+confirmText.ZIndex = 51
+
+local cancelBtn = Instance.new("TextButton", confirmFrame)
+cancelBtn.Size = UDim2.new(0.4, 0, 0, 40)
+cancelBtn.Position = UDim2.new(0.05, 0, 0.7, 0)
+cancelBtn.Text = "Annuler"
+cancelBtn.Font = Enum.Font.GothamBold
+cancelBtn.TextScaled = true
+cancelBtn.TextColor3 = Color3.new(1, 1, 1)
+cancelBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+cancelBtn.ZIndex = 52
+Instance.new("UICorner", cancelBtn).CornerRadius = UDim.new(0, 6)
+
+local quitBtn = Instance.new("TextButton", confirmFrame)
+quitBtn.Size = UDim2.new(0.4, 0, 0, 40)
+quitBtn.Position = UDim2.new(0.55, 0, 0.7, 0)
+quitBtn.Text = "Quitter"
+quitBtn.Font = Enum.Font.GothamBold
+quitBtn.TextScaled = true
+quitBtn.TextColor3 = Color3.new(1, 1, 1)
+quitBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+quitBtn.ZIndex = 52
+Instance.new("UICorner", quitBtn).CornerRadius = UDim.new(0, 6)
+
+closeBtn.MouseButton1Click:Connect(function()
+	confirmFrame.Visible = true
+end)
+
+cancelBtn.MouseButton1Click:Connect(function()
+	confirmFrame.Visible = false
+end)
+
 quitBtn.MouseButton1Click:Connect(function()
 	gui:Destroy()
 end)
 
 ------------------------------------------------------------
--- 🟢 BOUTON FARM
-------------------------------------------------------------
-local farmBtn = Instance.new("TextButton", mainFrame)
-farmBtn.Size = UDim2.new(0, 200, 0, 40)
-farmBtn.Position = UDim2.new(0, 75, 0, 110)
-farmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-farmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-farmBtn.Font = Enum.Font.GothamBold
-farmBtn.TextScaled = true
-farmBtn.Text = "Farm"
-Instance.new("UICorner", farmBtn).CornerRadius = UDim.new(0, 6)
-
-------------------------------------------------------------
--- 🔵 BOUTON HITBOX V2
+-- 🔵 BOUTON HITBOX V2 (VISIBLE)
 ------------------------------------------------------------
 local hitboxV2Btn = Instance.new("TextButton", mainFrame)
 hitboxV2Btn.Size = UDim2.new(0, 200, 0, 40)
@@ -214,7 +339,7 @@ hitboxV2Btn.Text = "Hitbox V2"
 Instance.new("UICorner", hitboxV2Btn).CornerRadius = UDim.new(0, 6)
 
 ------------------------------------------------------------
--- ⚙️ SCRIPT HITBOX V2 (DRAGGABLE FRAME)
+-- ⚙️ SCRIPT HITBOX V2
 ------------------------------------------------------------
 local hitboxGui = nil
 hitboxV2Btn.MouseButton1Click:Connect(function()
@@ -235,7 +360,7 @@ hitboxV2Btn.MouseButton1Click:Connect(function()
 	modFrame.BorderSizePixel = 2
 	modFrame.BorderColor3 = Color3.fromRGB(139, 0, 0)
 	modFrame.Active = true
-	makeDraggable(modFrame)
+	modFrame.Draggable = true
 
 	local title = Instance.new("TextLabel", modFrame)
 	title.Text = "Ghoulz Hitbox V2"
@@ -303,3 +428,150 @@ hitboxV2Btn.MouseButton1Click:Connect(function()
 		hitboxGui = nil
 	end)
 end)
+------------------------------------------------------------
+-- 🟢 BOUTON FARM
+------------------------------------------------------------
+local farmBtn = Instance.new("TextButton", mainFrame)
+farmBtn.Size = UDim2.new(0, 200, 0, 40)
+farmBtn.Position = UDim2.new(0, 75, 0, 110) -- placé au-dessus du bouton Hitbox V2
+farmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+farmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+farmBtn.Font = Enum.Font.GothamBold
+farmBtn.TextScaled = true
+farmBtn.Text = "Farm"
+Instance.new("UICorner", farmBtn).CornerRadius = UDim.new(0, 6)
+
+-- ⚙️ Action du bouton Farm (à personnaliser)
+farmBtn.MouseButton1Click:Connect(function()
+	print("Bouton Farm activé !") 
+	-- 💡 Ici, tu peux mettre ton script de farm.
+	-- Exemple :
+	-- loadstring(game:HttpGet("https://tonLienDeScriptFarm.lua"))()
+end)
+
+
+------------------------------------------------------------
+-- 🔵 BOUTON HITBOX V2 (VISIBLE)
+------------------------------------------------------------
+local hitboxV2Btn = Instance.new("TextButton", mainFrame)
+hitboxV2Btn.Size = UDim2.new(0, 200, 0, 40)
+hitboxV2Btn.Position = UDim2.new(0, 75, 0, 160)
+hitboxV2Btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+hitboxV2Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+hitboxV2Btn.Font = Enum.Font.GothamBold
+hitboxV2Btn.TextScaled = true
+hitboxV2Btn.Text = "Hitbox V2"
+Instance.new("UICorner", hitboxV2Btn).CornerRadius = UDim.new(0, 6)
+
+------------------------------------------------------------
+-- ⚙️ SCRIPT HITBOX V2
+------------------------------------------------------------
+local hitboxGui = nil
+hitboxV2Btn.MouseButton1Click:Connect(function()
+	if hitboxGui and hitboxGui.Parent then
+		hitboxGui:Destroy()
+		hitboxGui = nil
+		return
+	end
+
+	hitboxGui = Instance.new("ScreenGui")
+	hitboxGui.Name = "GhoulzHitboxV2"
+	hitboxGui.Parent = player:WaitForChild("PlayerGui")
+
+	local modFrame = Instance.new("Frame", hitboxGui)
+	modFrame.Size = UDim2.new(0, 250, 0, 200)
+	modFrame.Position = UDim2.new(0.5, -125, 0.5, -100)
+	modFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	modFrame.BorderSizePixel = 2
+	modFrame.BorderColor3 = Color3.fromRGB(139, 0, 0)
+	modFrame.Active = true
+	modFrame.Draggable = true
+
+	local title = Instance.new("TextLabel", modFrame)
+	title.Text = "Ghoulz Hitbox V2"
+	title.Size = UDim2.new(1, 0, 0, 30)
+	title.BackgroundTransparency = 1
+	title.TextColor3 = Color3.new(1, 1, 1)
+	title.TextScaled = true
+	title.Font = Enum.Font.GothamBold
+
+	local hitboxToggled = false
+	local speedToggled = false
+
+	local function updateHitboxes()
+		for _, plr in ipairs(game.Players:GetPlayers()) do
+			pcall(function()
+				if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+					local part = plr.Character.HumanoidRootPart
+					if plr == player then
+						part.Size = Vector3.new(2, 2, 1)
+					else
+						part.Size = hitboxToggled and Vector3.new(13, 13, 13) or Vector3.new(2, 2, 1)
+						part.CanCollide = false
+						part.Transparency = hitboxToggled and 0.5 or 1
+						part.Color = hitboxToggled and Color3.fromRGB(0, 0, 255) or Color3.fromRGB(255, 255, 255)
+						local outline = part:FindFirstChild("HitboxOutline") or Instance.new("SelectionBox", part)
+						outline.Name = "HitboxOutline"
+						outline.Adornee = part
+						outline.Color3 = Color3.fromRGB(255, 0, 0)
+						outline.Visible = hitboxToggled
+					end
+				end
+			end)
+		end
+	end
+
+	local hitboxBtn = Instance.new("TextButton", modFrame)
+	hitboxBtn.Text = "Hitbox OFF"
+	hitboxBtn.Size = UDim2.new(0, 200, 0, 40)
+	hitboxBtn.Position = UDim2.new(0, 25, 0, 40)
+	hitboxBtn.MouseButton1Click:Connect(function()
+		hitboxToggled = not hitboxToggled
+		updateHitboxes()
+		hitboxBtn.Text = hitboxToggled and "Hitbox ON" or "Hitbox OFF"
+	end)
+
+	local speedBtn = Instance.new("TextButton", modFrame)
+	speedBtn.Text = "Speed OFF"
+	speedBtn.Size = UDim2.new(0, 200, 0, 40)
+	speedBtn.Position = UDim2.new(0, 25, 0, 90)
+	speedBtn.MouseButton1Click:Connect(function()
+		speedToggled = not speedToggled
+		if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+			local hum = player.Character:FindFirstChildOfClass("Humanoid")
+			hum.WalkSpeed = speedToggled and 38 or 16
+			speedBtn.Text = speedToggled and "Speed ON" or "Speed OFF"
+		end
+	end)
+
+	local closeBtn2 = Instance.new("TextButton", modFrame)
+	closeBtn2.Text = "Fermer"
+	closeBtn2.Size = UDim2.new(0, 200, 0, 40)
+	closeBtn2.Position = UDim2.new(0, 25, 0, 140)
+	closeBtn2.MouseButton1Click:Connect(function()
+		hitboxGui:Destroy()
+		hitboxGui = nil
+	end)
+end)
+------------------------------------------------------------
+-- 🐾 BOUTON ANIMAL SIMULATOR
+------------------------------------------------------------
+local animalSimBtn = Instance.new("TextButton", mainFrame)
+animalSimBtn.Size = UDim2.new(0, 200, 0, 40)
+animalSimBtn.Position = UDim2.new(0, 75, 0, 110) -- au-dessus du bouton Hitbox V2
+animalSimBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+animalSimBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+animalSimBtn.Font = Enum.Font.GothamBold
+animalSimBtn.TextScaled = true
+animalSimBtn.Text = "Animal Simulator"
+Instance.new("UICorner", animalSimBtn).CornerRadius = UDim.new(0, 6)
+
+-- ⚙️ Action du bouton Animal Simulator
+animalSimBtn.MouseButton1Click:Connect(function()
+    print("Bouton Animal Simulator activé !")
+    -- 💡 Ici, tu peux ajouter ton script Animal Simulator
+    -- Exemple :
+    -- loadstring(game:HttpGet("https://tonLienDeScriptAnimalSimulator.lua"))()
+end)
+
+
