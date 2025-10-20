@@ -1,4 +1,4 @@
--- // GHOULZ HUB - Version finale (corrigée et complète)
+-- // GHOULZ HUB - Version finale (Farm + Hitbox V2 + Draggable mobile)
 
 repeat task.wait() until game:IsLoaded()
 local Players = game:GetService("Players")
@@ -40,7 +40,7 @@ introText.Font = Enum.Font.GothamBold
 introText.BackgroundTransparency = 1
 introText.TextTransparency = 1
 
--- Animation d'apparition stylée
+-- Animation d'apparition
 task.spawn(function()
 	for i = 1, 20 do
 		introImage.ImageTransparency = 1 - (i/20)
@@ -58,6 +58,32 @@ task.spawn(function()
 end)
 
 ------------------------------------------------------------
+-- 📱 Fonction draggable (PC + mobile)
+------------------------------------------------------------
+local UserInputService = game:GetService("UserInputService")
+local function makeDraggable(frame)
+	local dragging, dragStart, startPos
+	frame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = frame.Position
+		end
+	end)
+	frame.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - dragStart
+			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
+end
+
+------------------------------------------------------------
 -- 🎛️ FRAME PRINCIPALE
 ------------------------------------------------------------
 local mainFrame = Instance.new("Frame", gui)
@@ -66,9 +92,9 @@ mainFrame.Position = UDim2.new(0.5, -175, 0.5, -115)
 mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 mainFrame.Visible = false
 mainFrame.Active = true
-mainFrame.Draggable = true
 mainFrame.ClipsDescendants = true
 mainFrame.BackgroundTransparency = 1
+makeDraggable(mainFrame)
 
 local titleBar = Instance.new("Frame", mainFrame)
 titleBar.Size = UDim2.new(1, 0, 0, 35)
@@ -117,6 +143,7 @@ confirmFrame.ZIndex = 50
 confirmFrame.BackgroundTransparency = 0.1
 confirmFrame.BorderSizePixel = 0
 Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 8)
+makeDraggable(confirmFrame)
 
 local confirmText = Instance.new("TextLabel", confirmFrame)
 confirmText.Size = UDim2.new(1, -20, 0, 70)
@@ -153,17 +180,120 @@ Instance.new("UICorner", quitBtn).CornerRadius = UDim.new(0, 6)
 closeBtn.MouseButton1Click:Connect(function()
 	confirmFrame.Visible = true
 end)
-
 cancelBtn.MouseButton1Click:Connect(function()
 	confirmFrame.Visible = false
 end)
-
 quitBtn.MouseButton1Click:Connect(function()
 	gui:Destroy()
 end)
 
 ------------------------------------------------------------
--- 🔵 BOUTON HITBOX V2 (VISIBLE)
+-- 🟢 BOUTON FARM
+------------------------------------------------------------
+local farmBtn = Instance.new("TextButton", mainFrame)
+farmBtn.Size = UDim2.new(0, 200, 0, 40)
+farmBtn.Position = UDim2.new(0, 75, 0, 110)
+farmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+farmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+farmBtn.Font = Enum.Font.GothamBold
+farmBtn.TextScaled = true
+farmBtn.Text = "Farm"
+Instance.new("UICorner", farmBtn).CornerRadius = UDim.new(0, 6)
+
+farmBtn.MouseButton1Click:Connect(function()
+	-- ⚙️ Script Auto Coins
+	repeat task.wait() until game:IsLoaded()
+	local Players = game:GetService("Players")
+	local player = Players.LocalPlayer
+
+	if player.PlayerGui:FindFirstChild("GhoulzHubCoins") then return end
+
+	local guiCoins = Instance.new("ScreenGui")
+	guiCoins.Name = "GhoulzHubCoins"
+	guiCoins.ResetOnSpawn = false
+	guiCoins.Parent = player:WaitForChild("PlayerGui")
+
+	local main = Instance.new("Frame", guiCoins)
+	main.Size = UDim2.new(0, 280, 0, 160)
+	main.Position = UDim2.new(0.5, -140, 0.5, -80)
+	main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	main.BorderColor3 = Color3.fromRGB(255, 0, 0)
+	main.Active = true
+	makeDraggable(main)
+
+	local title = Instance.new("TextLabel", main)
+	title.Size = UDim2.new(1, 0, 0, 35)
+	title.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	title.Text = "Ghoulz Hub"
+	title.TextScaled = true
+	title.Font = Enum.Font.GothamBold
+	title.TextColor3 = Color3.new(1, 1, 1)
+
+	local toggleBtn = Instance.new("TextButton", main)
+	toggleBtn.Size = UDim2.new(0, 200, 0, 40)
+	toggleBtn.Position = UDim2.new(0.5, -100, 0, 50)
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	toggleBtn.Text = "Auto Coins: OFF"
+	toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+	toggleBtn.Font = Enum.Font.GothamBold
+	toggleBtn.TextScaled = true
+	makeDraggable(toggleBtn)
+
+	local closeBtn2 = Instance.new("TextButton", main)
+	closeBtn2.Size = UDim2.new(0, 200, 0, 35)
+	closeBtn2.Position = UDim2.new(0.5, -100, 0, 100)
+	closeBtn2.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+	closeBtn2.Text = "Fermer"
+	closeBtn2.TextColor3 = Color3.new(1, 1, 1)
+	closeBtn2.Font = Enum.Font.GothamBold
+	closeBtn2.TextScaled = true
+	makeDraggable(closeBtn2)
+
+	local collecting = false
+	local collectThread
+	local collected = {}
+
+	local function collectLoop()
+		while collecting do
+			local char = player.Character
+			if char and char:FindFirstChild("HumanoidRootPart") then
+				local hrp = char.HumanoidRootPart
+				for _, obj in ipairs(workspace:GetDescendants()) do
+					if obj:IsA("TouchTransmitter") and obj.Parent and obj.Parent:IsA("BasePart") and not collected[obj.Parent] then
+						collected[obj.Parent] = true
+						pcall(function()
+							firetouchinterest(hrp, obj.Parent, 0)
+							firetouchinterest(hrp, obj.Parent, 1)
+						end)
+					end
+				end
+			end
+			task.wait(1.5)
+		end
+	end
+
+	toggleBtn.MouseButton1Click:Connect(function()
+		collecting = not collecting
+		if collecting then
+			toggleBtn.Text = "Auto Coins: ON"
+			toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+			collected = {}
+			collectThread = task.spawn(collectLoop)
+		else
+			toggleBtn.Text = "Auto Coins: OFF"
+			toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+		end
+	end)
+
+	closeBtn2.MouseButton1Click:Connect(function()
+		collecting = false
+		if collectThread then task.cancel(collectThread) end
+		guiCoins:Destroy()
+	end)
+end)
+
+------------------------------------------------------------
+-- 🔵 BOUTON HITBOX V2
 ------------------------------------------------------------
 local hitboxV2Btn = Instance.new("TextButton", mainFrame)
 hitboxV2Btn.Size = UDim2.new(0, 200, 0, 40)
@@ -197,7 +327,7 @@ hitboxV2Btn.MouseButton1Click:Connect(function()
 	modFrame.BorderSizePixel = 2
 	modFrame.BorderColor3 = Color3.fromRGB(139, 0, 0)
 	modFrame.Active = true
-	modFrame.Draggable = true
+	makeDraggable(modFrame)
 
 	local title = Instance.new("TextLabel", modFrame)
 	title.Text = "Ghoulz Hitbox V2"
