@@ -168,7 +168,7 @@ end)
 ------------------------------------------------------------
 local farmBtn = Instance.new("TextButton", mainFrame)
 farmBtn.Size = UDim2.new(0, 200, 0, 40)
-farmBtn.Position = UDim2.new(0, 75, 0, 110)
+farmBtn.Position = UDim2.new(0, 75, 0, 110) -- placé au-dessus du bouton Hitbox V2
 farmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 farmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 farmBtn.Font = Enum.Font.GothamBold
@@ -176,10 +176,15 @@ farmBtn.TextScaled = true
 farmBtn.Text = "Farm"
 Instance.new("UICorner", farmBtn).CornerRadius = UDim.new(0, 6)
 
+-- ⚙️ Action du bouton Farm (à personnaliser)
 farmBtn.MouseButton1Click:Connect(function()
-	print("Bouton Farm activé !")
-	-- Ici tu peux ajouter ton script de farm
+	print("Bouton Farm activé !") 
+	-- 💡 Ici, tu peux mettre ton script de farm.
+	-- Exemple :
+	-- loadstring(game:HttpGet("https://raw.githubusercontent.com/yanarke/auto-coin/refs/heads/main/v1"))()
 end)
+
+
 
 ------------------------------------------------------------
 -- 🔵 BOUTON HITBOX V2
